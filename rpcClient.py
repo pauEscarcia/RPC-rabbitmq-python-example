@@ -2,7 +2,7 @@
 import pika
 import uuid
 
-class FibonacciRpcClient(object):
+class dollar(object):
     def __init__(self):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
                 host='localhost'))
@@ -19,6 +19,7 @@ class FibonacciRpcClient(object):
         if self.corr_id == props.correlation_id:
             self.response = body
 
+    
     def call(self, n):
         self.response = None
         self.corr_id = str(uuid.uuid4())
@@ -33,8 +34,10 @@ class FibonacciRpcClient(object):
             self.connection.process_data_events()
         return int(self.response)
 
-fibonacci_rpc = FibonacciRpcClient()
+dollar_rpc = dollar() 
 
-print " [x] Requesting fib(30)"
-response = fibonacci_rpc.call(30)
+euros = int(raw_input('Introduzca la cantidad en pesos: '))
+
+print " [x] Requesting dollar(30)"
+response = dollar_rpc.call(30)
 print " [.] Got %r" % (response,)

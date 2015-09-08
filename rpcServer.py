@@ -1,5 +1,5 @@
 import pika
-
+#iniciar conexion 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
         host='localhost'))
 
@@ -7,19 +7,16 @@ channel = connection.channel()
 
 channel.queue_declare(queue='rpc_queue')
 
-def fib(n):
-    if n == 0:
-        return 0
-    elif n == 1:
-        return 1
-    else:
-        return fib(n-1) + fib(n-2)
+#funcion para convertir pesos a dolares
+def convert_pesos_to_dollar(n):
+    return n * 17.10
+
 
 def on_request(ch, method, props, body):
     n = int(body)
 
-    print " [.] fib(%s)"  % (n,)
-    response = fib(n)
+    print " [.] convert_pesos_to_dollar(%s)"  % (n,)
+    response = convert_pesos_to_dollar(n)
 
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
