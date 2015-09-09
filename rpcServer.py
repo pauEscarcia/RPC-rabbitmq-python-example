@@ -2,7 +2,7 @@
 import pika
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='localhost'))
+        host='10.13.4.33',credentials = pika.PlainCredentials('job', 'job')))
 
 channel = connection.channel()
 
@@ -15,6 +15,9 @@ def fib(n):
     #    return 1
     #else:
         return n * 16.97  #fib(n-1) + fib(n-2)
+
+
+
 
 def on_request(ch, method, props, body):
     n = int(body)

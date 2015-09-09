@@ -6,7 +6,7 @@ class FibonacciRpcClient(object):
     def __init__(self):
 
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
-                host='localhost'))
+                host='10.13.4.33',credentials = pika.PlainCredentials('job', 'job')))
 
         self.channel = self.connection.channel()
 
