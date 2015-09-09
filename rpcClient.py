@@ -2,9 +2,10 @@
 import pika
 import uuid
 
+#Un cliente envia una mesaje de peticion y el servidor responde con un mensaje 
 class FibonacciRpcClient(object):
     def __init__(self):
-
+        #inciar conexion de manera local 
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
                 host='10.13.4.33',credentials = pika.PlainCredentials('job', 'job')))
 
@@ -19,7 +20,7 @@ class FibonacciRpcClient(object):
     def on_response(self, ch, method, props, body):
         if self.corr_id == props.correlation_id:
             self.response = body
-
+        
     def call(self, n):
         self.response = None
         self.corr_id = str(uuid.uuid4())
@@ -32,10 +33,11 @@ class FibonacciRpcClient(object):
                                    body=str(n))
         while self.response is None:
             self.connection.process_data_events()
-        return float(self.response) #int
+        return self.response #regresa la respuesta del server 
 
 fibonacci_rpc = FibonacciRpcClient()
 
-print " [x] Convirtiendo 2 Dolares"
+#doll = int(raw_input('Introduzca la cantidad en Dolares: '))
+#print " [x] Convirtiendo  Dolares"
 response = fibonacci_rpc.call(2)
-print " [.] Pesos %r" % (response,)
+print " [.] Archivos a descargar %r" % (response,)
