@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import pika
 import os
+import base64
+import sqlite3
+import time
 
 #Realiza la conexion de manera local  
 connection = pika.BlockingConnection(pika.ConnectionParameters(
@@ -9,17 +12,23 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(
 channel = connection.channel()
 channel.queue_declare(queue='rpc_queue')
 
-#Metodo para establecer conexion 
+#Metodo para establecer conexion y regresar una llave para accesos a otras fuciones
 def login(usuario,password):
+    #Conexión a base de datos
     conn = sqlite3.connect('users.sqlite')
     c = conn.cursor()   
+    #Consulta de usuarios
     c.execute("SELECT * FROM users WHERE user=? and password = ?",(usuario, password))  
     row = c.fetchone()
     conn.commit()
+    llave = None
     if row is not None:
-        print row
-        
+        #Creación de llave 
+        llave = base64.b64encode(str(row[0])+time.strftime("%H:%M:%S"))
+        c.execute("UPDATE users set key=? where id = ?",(llave, row[0]))
+        conn.commit()   
     conn.close()
+    return llave
 
 #Metodo que lista todos los archivos con la extension .py en la ruta especifica del directorio 
 def archivos (n):
