@@ -4,7 +4,7 @@ import os
 
 #Realiza la conexion de manera local  
 connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='10.13.4.33',credentials = pika.PlainCredentials('job', 'job')))
+        host='10.13.4.33',credentials = pika.PlainCredentials('job', 'job')))  # 10.13.4.33   192.168.1.87
 
 channel = connection.channel()
 channel.queue_declare(queue='rpc_queue')
@@ -12,7 +12,7 @@ channel.queue_declare(queue='rpc_queue')
 #Metodo que lista todos los archivos con la extension .py en la ruta especifica del directorio 
 def archivos (n):
     #Variable para la ruta al directorio
-    path = 'C:\Users\Master PC\Documents\RPC-rabbitmq-python-example'
+    path = 'C:\Users\Master PC\Documents\RPC/rabbitmq-python-example'
     #Lista vacia para incluir los ficheros
     lstFiles = []
     #Lista con todos los ficheros del directorio:

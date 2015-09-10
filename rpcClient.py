@@ -7,7 +7,7 @@ class FibonacciRpcClient(object):
     def __init__(self):
         #inciar conexion de manera local 
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
-                host='10.13.4.33',credentials = pika.PlainCredentials('job', 'job')))
+                host='10.13.4.33',credentials = pika.PlainCredentials('job', 'job'))) #192.168.1.87  10.13.4.33
 
         self.channel = self.connection.channel()
 
@@ -41,3 +41,4 @@ fibonacci_rpc = FibonacciRpcClient()
 #print " [x] Convirtiendo  Dolares"
 response = fibonacci_rpc.call(2)
 print " [.] Archivos a descargar %r" % (response,)
+
