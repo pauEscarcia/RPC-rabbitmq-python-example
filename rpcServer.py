@@ -8,22 +8,22 @@ import time
 #Realiza la conexion de manera local  
 connection = pika.BlockingConnection(pika.ConnectionParameters(
         host='10.13.4.33',credentials = pika.PlainCredentials('job', 'job')))
+#connection = pika.BlockingConnection(pika.ConnectionParameters(
+#        host='localhost'))
 
 channel = connection.channel()
 channel.queue_declare(queue='rpc_queue')
+channel.queue_declare(queue='rpc_queue_login')
 
 #Metodo para establecer conexion y regresar una llave para accesos a otras fuciones
-def login(usuario,password):
-    #Conexión a base de datos
+def login(usuario,password):        
     conn = sqlite3.connect('users.sqlite')
-    c = conn.cursor()   
-    #Consulta de usuarios
+    c = conn.cursor()       
     c.execute("SELECT * FROM users WHERE user=? and password = ?",(usuario, password))  
     row = c.fetchone()
     conn.commit()
     llave = None
-    if row is not None:
-        #Creación de llave 
+    if row is not None:        
         llave = base64.b64encode(str(row[0])+time.strftime("%H:%M:%S"))
         c.execute("UPDATE users set key=? where id = ?",(llave, row[0]))
         conn.commit()   
@@ -34,6 +34,7 @@ def login(usuario,password):
 def archivos (n):
     #Variable para la ruta al directorio
     path = 'C:\Users\Master PC\Documents\RPC-rabbitmq-python-example'
+    #path ='/Users/miniguez/Projects/python/RPC_1_semestre_MIS'
     #Lista vacia para incluir los ficheros
     lstFiles = []
     #Lista con todos los ficheros del directorio:
@@ -69,6 +70,22 @@ def on_request(ch, method, props, body):
 
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(on_request, queue='rpc_queue')
+
+#metodo de respuesta hacia el cliete
+def on_request_login(ch, method, props, body):
+    n = body    
+    credencial = n.split(',')    
+    response = login(credencial[0], credencial[1])
+    ch.basic_publish(exchange='',
+                     routing_key=props.reply_to,
+                     properties=pika.BasicProperties(correlation_id = \
+                                                     props.correlation_id),
+                     body=str(response))
+    ch.basic_ack(delivery_tag = method.delivery_tag)
+
+channel.basic_qos(prefetch_count=1)
+channel.basic_consume(on_request, queue='rpc_queue')
+channel.basic_consume(on_request_login, queue='rpc_queue_login')
 
 print " [x] Esperando por peticiones RPC"
 channel.start_consuming()
