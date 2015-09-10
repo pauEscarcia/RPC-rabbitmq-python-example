@@ -9,6 +9,18 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(
 channel = connection.channel()
 channel.queue_declare(queue='rpc_queue')
 
+#Metodo para establecer conexion 
+def login(usuario,password):
+    conn = sqlite3.connect('users.sqlite')
+    c = conn.cursor()   
+    c.execute("SELECT * FROM users WHERE user=? and password = ?",(usuario, password))  
+    row = c.fetchone()
+    conn.commit()
+    if row is not None:
+        print row
+        
+    conn.close()
+
 #Metodo que lista todos los archivos con la extension .py en la ruta especifica del directorio 
 def archivos (n):
     #Variable para la ruta al directorio
