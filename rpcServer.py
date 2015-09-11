@@ -14,6 +14,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(
 channel = connection.channel()
 channel.queue_declare(queue='rpc_queue')
 channel.queue_declare(queue='rpc_queue_login')
+channel.queue_declare(queue='rpc_queue_download')
 
 #Metodo para establecer conexion y regresar una llave para accesos a otras fuciones
 def login(usuario,password):        
@@ -53,6 +54,14 @@ def archivos (n):
     #print "longitud de la lista = ", len(lstFiles)
     return lstFiles
 
+#Metodo que regresa el archivo a descargar, primero lo serializa y regresa una lista con el contenido al cliente
+def SerFile(nom):
+	arch = open(nom,'r')
+	lineas = arch.readlines()
+	arch.close()
+	ser = dumps(lineas)
+	return ser
+
 #metodo que realiza la converision de pesos a dolares 
 #def fib(n):
 #    return n * 16.97  #fib(n-1) + fib(n-2)
@@ -85,9 +94,21 @@ def on_request_login(ch, method, props, body):
                      body=str(response))
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
+#metodo de respuesta hacia el cielnte 
+def on_request_download(ch, method, props, body):
+    n = body     
+    response = SerFile(n)
+    ch.basic_publish(exchange='',
+                     routing_key=props.reply_to,
+                     properties=pika.BasicProperties(correlation_id = \
+                                                     props.correlation_id),
+                     body=str(response))
+    ch.basic_ack(delivery_tag = method.delivery_tag)
+
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(on_request, queue='rpc_queue')
 channel.basic_consume(on_request_login, queue='rpc_queue_login')
+channel.basic_consume(on_request_download, queuq='rpc_queue_download')
 
 print " [x] Esperando por peticiones RPC"
 channel.start_consuming()

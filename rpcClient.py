@@ -54,6 +54,20 @@ class RpcClient(object):
             self.connection.process_data_events()
         return self.response 
 
+	 def call_download(self, filename):
+        self.response = None
+        self.corr_id = str(uuid.uuid4())
+        self.channel.basic_publish(exchange='',
+                                   routing_key='rpc_queue_download',
+                                   properties=pika.BasicProperties(
+                                         reply_to = self.callback_queue,
+                                         correlation_id = self.corr_id,
+                                         ),
+                                   body=filename)
+        while self.response is None:
+            self.connection.process_data_events()
+        return self.response
+
 rpc = RpcClient()
 
 user = raw_input('Enter your user:')
@@ -70,12 +84,18 @@ if response is not None:
         for entry in options:
             print entry, menu[entry]
         selection=raw_input("Please Select:")
-        if selection =='1':
+        if selection == '1':
             response = rpc.call(2)
             print " [.] Archivos a descargar %r" % (response)
-        elif:
+        elif selection == '2':
             archivo = raw_input('Enter the file:')
-
+				response = rpc.call_download(archivo)
+				dec = loads(response)
+				ar = open(archivo,'w')
+				for li in dec:
+					ar.write(li)
+				ar.close()
+				print "File downloaded successfully."
         elif selection == '3':
             break
         else:
