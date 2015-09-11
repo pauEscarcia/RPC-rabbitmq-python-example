@@ -60,12 +60,12 @@ def archivos (n):
 def SerFile(nom):
    #path = 'C:\Users\Master PC\Documents\RPC-rabbitmq-python-example'
    #path ='/Users/miniguez/Projects/python/RPC_1_semestre_MIS'
-   path = '/home/REX/Documentos/Programas/Python/RPC'
-	arch = open(path+nom,'r')
-	lineas = arch.readlines()
-	arch.close()
-	ser = dumps(lineas)
-	return ser
+   path = '/home/REX/Documentos/Programas/Python/RPC/'
+   arch = open(path+nom,'r')
+   lineas = arch.readlines()
+   arch.close()
+   ser = dumps(lineas)
+   return ser
 
 #metodo que realiza la converision de pesos a dolares 
 #def fib(n):
