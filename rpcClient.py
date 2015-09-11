@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 from cPickle import dumps, loads
 import pika
 import uuid
@@ -7,12 +8,12 @@ import getpass
 
 #Un cliente envia una mesaje de peticion y el servidor responde con un mensaje 
 class RpcClient(object):
+    #creamos el metodo inicializador de nuestra clase el cual contiene la conexión a RabbirMQ
     def __init__(self):
-        #inciar conexion de manera local 
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(
-                host='10.13.4.33',credentials = pika.PlainCredentials('job', 'job')))
-        #self.connection = pika.BlockingConnection(pika.ConnectionParameters(
-        #        host='localhost'))
+        # inciar conexion de manera remota
+         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
+                host='localhost',credentials = pika.PlainCredentials('usuario', 'password')))
+        
 
         self.channel = self.connection.channel()
 
@@ -21,11 +22,11 @@ class RpcClient(object):
 
         self.channel.basic_consume(self.on_response, no_ack=True,
                                    queue=self.callback_queue)
-
+    #Metodo de respuesta RabbitMQ
     def on_response(self, ch, method, props, body):
         if self.corr_id == props.correlation_id:
             self.response = body
-        
+    #Metodo para hacer peticiones al metodo de listado de archivos en el server
     def call(self, n):
         self.response = None
         self.corr_id = str(uuid.uuid4())
@@ -39,7 +40,7 @@ class RpcClient(object):
         while self.response is None:
             self.connection.process_data_events()
         return self.response #regresa la respuesta del server
-
+    #Metodo para hacer peticiones al metodo de login en el server
     def call_login(self, user, password ):
         self.response = None
         password = base64.b64encode(password)
@@ -54,7 +55,7 @@ class RpcClient(object):
         while self.response is None:
             self.connection.process_data_events()
         return self.response 
-
+    #Metodo para hacer peticiones al metodo de descarga en el server
     def call_download(self, filename):
         self.response = None
         self.corr_id = str(uuid.uuid4())
@@ -70,11 +71,11 @@ class RpcClient(object):
         return self.response
 
 rpc = RpcClient()
-
+# Menu de opciones y peticiones al server
 user = raw_input('Enter your user:')
 password = getpass.getpass()
 response = rpc.call_login(user, password)
-if response is not None:
+if response != 'None':
     menu = {}
     menu['1']="List files." 
     menu['2']="Dowload file."    
