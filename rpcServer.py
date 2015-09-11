@@ -108,7 +108,7 @@ def on_request_download(ch, method, props, body):
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(on_request, queue='rpc_queue')
 channel.basic_consume(on_request_login, queue='rpc_queue_login')
-channel.basic_consume(on_request_download, queuq='rpc_queue_download')
+channel.basic_consume(on_request_download, queue='rpc_queue_download')
 
 print " [x] Esperando por peticiones RPC"
 channel.start_consuming()

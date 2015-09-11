@@ -54,7 +54,7 @@ class RpcClient(object):
             self.connection.process_data_events()
         return self.response 
 
-	 def call_download(self, filename):
+    def call_download(self, filename):
         self.response = None
         self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(exchange='',
@@ -89,13 +89,13 @@ if response is not None:
             print " [.] Archivos a descargar %r" % (response)
         elif selection == '2':
             archivo = raw_input('Enter the file:')
-				response = rpc.call_download(archivo)
-				dec = loads(response)
-				ar = open(archivo,'w')
-				for li in dec:
-					ar.write(li)
-				ar.close()
-				print "File downloaded successfully."
+            response = rpc.call_download(archivo)
+            dec = loads(response)
+            ar = open(archivo,'w')
+            for li in dec:
+                ar.write(li)
+            ar.close()
+            print "File downloaded successfully."
         elif selection == '3':
             break
         else:
