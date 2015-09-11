@@ -36,8 +36,9 @@ def login(usuario,password):
 def archivos (n):
     #Variable para la ruta al directorio
 
-    path = 'C:\Users\Master PC\Documents\RPC-rabbitmq-python-example'
+    #path = 'C:\Users\Master PC\Documents\RPC-rabbitmq-python-example'
     #path ='/Users/miniguez/Projects/python/RPC_1_semestre_MIS'
+    path = '/home/REX/Documentos/Programas/Python/RPC'
 
     #Lista vacia para incluir los ficheros
     lstFiles = []
@@ -57,7 +58,10 @@ def archivos (n):
 
 #Metodo que regresa el archivo a descargar, primero lo serializa y regresa una lista con el contenido al cliente
 def SerFile(nom):
-	arch = open(nom,'r')
+   #path = 'C:\Users\Master PC\Documents\RPC-rabbitmq-python-example'
+   #path ='/Users/miniguez/Projects/python/RPC_1_semestre_MIS'
+   path = '/home/REX/Documentos/Programas/Python/RPC'
+	arch = open(path+nom,'r')
 	lineas = arch.readlines()
 	arch.close()
 	ser = dumps(lineas)
