@@ -60,7 +60,25 @@ user = raw_input('Enter your user:')
 password = getpass.getpass()
 response = rpc.call_login(user, password)
 if response is not None:
-    response = rpc.call(2)
-    print " [.] Archivos a descargar %r" % (response)
+    menu = {}
+    menu['1']="List files." 
+    menu['2']="Dowload file."    
+    menu['3']="Exit"
+    while True:
+        options=menu.keys()
+        options.sort()
+        for entry in options:
+            print entry, menu[entry]
+        selection=raw_input("Please Select:")
+        if selection =='1':
+            response = rpc.call(2)
+            print " [.] Archivos a descargar %r" % (response)
+        elif:
+            archivo = raw_input('Enter the file:')
+
+        elif selection == '3':
+            break
+        else:
+            print "Unknown Option Selected!"    
 else:
     print 'Error in user or password'
