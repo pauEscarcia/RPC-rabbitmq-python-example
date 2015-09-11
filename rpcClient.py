@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from cPickle import dumps, loads
 import pika
 import uuid
 import base64

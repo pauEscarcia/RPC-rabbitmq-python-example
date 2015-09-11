@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from cPickle import dumps, loads
 import pika
 import os
 import base64
