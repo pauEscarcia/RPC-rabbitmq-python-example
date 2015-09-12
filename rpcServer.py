@@ -9,7 +9,7 @@ import time
 
 #Realiza la conexion de manera remota al host, esto puede ser modificado asi como a las credenciales
 connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='localhost',credentials = pika.PlainCredentials('usuario', 'password')))
+        host='localhost'))
 
 
 #creamos loa canales de conexión para RabbitMQ

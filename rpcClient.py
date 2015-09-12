@@ -11,8 +11,8 @@ class RpcClient(object):
     #creamos el metodo inicializador de nuestra clase el cual contiene la conexión a RabbirMQ
     def __init__(self):
         # inciar conexion de manera remota
-         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
-                host='localhost',credentials = pika.PlainCredentials('usuario', 'password')))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(
+                host='localhost'))
         
 
         self.channel = self.connection.channel()
